@@ -1,0 +1,57 @@
+\documentclass[a4paper, titlepage, 12pt]{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage[CJKbookmarks]{hyperref}
+
+\title{Policy Gradient Algorithms Series}
+\author{ritchie huang}
+\date{2019-09-18}
+
+\begin{document}
+
+\maketitle 
+
+\tableofcontents
+\newpage
+
+\section{Preliminaries}
+From the paper, \textbf{TRPO} algorithm finally propose the core optimization problem:
+
+\begin{equation}
+    \begin{aligned}
+    \theta_{k + 1} &= \mathop{argmax} \limits_{\theta} \mathcal{L}(\theta_{k}, \theta) \\
+               s.t.\quad&\frac{1}{2} (\theta - \theta_{k})^{T} H (\theta - \theta_{k}) \leq \delta 
+    \end{aligned}
+\end{equation}
+
+\section{First order approximation on the gradient}
+In trust region policy optimization, we finally get this:
+\begin{equation}
+    \mathcal{L}(\theta_{k}, \theta) = \mathop{\mathbb{E}} \limits_{s, a \in \pi_{\theta_k}} \left[ \frac{\pi_{\theta}(a | s)}{\pi_{\theta_{k}(a | s)}} A^{\pi_{\theta_{k}}}(s, a) \right]
+\end{equation}
+
+if we perform first-order Tylor expansion around the old policy $\theta_{k}$ on this equation, we obtain:
+
+\begin{equation}
+    \begin{aligned}
+    \mathcal{L}(\theta_{k}, \theta) &= \mathcal{L}(\theta_{k}, \theta_{k}) + \nabla_{\theta} \mathcal{L}(\theta_{k}, \theta) |_{\theta = \theta_{k}} (\theta - \theta_{k}) \\
+                                    &= 0 + \nabla_{\theta} \mathcal{L}(\theta_{k}, \theta) |_{\theta = \theta_{k}} (\theta - \theta_{k}) \\
+                                    &= \nabla_{\theta} \mathcal{L}(\theta_{k}, \theta) |_{\theta = \theta_{k}}
+    \end{aligned}
+\end{equation}
+
+we take the gradient w.r.t $\theta$ out:
+\begin{equation}
+    \begin{aligned}
+    \nabla_{\theta} \mathcal{L}(\theta_{k}, \theta)|_{\theta = \theta_{k}} &= \mathop{\mathbb{E}} \limits_{s, a \in \pi_{\theta_{k}}} \left[ \frac{\nabla_{\theta} \pi_{\theta} (a | s) |_{\theta = \theta_{k}}}{\pi_{\theta_{k}} (a | s)} A^{\pi_{\theta_{k}}} (s, a) \right] \\
+                                                                           &= \mathop{\mathbb{E}} \limits_{s, a \in \pi_{\theta_{k}}} \left[ \nabla_{\theta} \log \pi_{\theta} (a | s) |_{\theta = \theta_{k}} A^{\pi_{\theta_{k}}} (s, a) \right]
+    \end{aligned}
+\end{equation}
+Coincidently, the gradient is exactly the gradient of ``Vanilla Policy Gradient''.
+
+\section{Second order approximation on the constraint}
+
+\end{document}

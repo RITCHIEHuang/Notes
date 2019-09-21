@@ -1,0 +1,83 @@
+\documentclass[a4paper, 12pt, titlepage]{article}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proof}{Proof}
+\usepackage{mathtools}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage[CJKbookmarks]{hyperref}
+
+\title{Notes for Min-Cut and Max-Cut}
+\author{ritchie huang}
+\date{2019-09-20}
+
+\begin{document}
+
+\maketitle 
+
+\tableofcontents
+\newpage
+
+\section{Understand Karger's vanilla Min-Cut Algorithm}
+Let \textbf{G} be the graph with \textbf{n} nodes, \textbf{C} be the min-cut. 
+
+\begin{theorem}
+\[
+    Pr \bigg[ \text{\textbf{C} is returned} \bigg] \geq \frac{2}{n (n - 1)}
+\]
+\end{theorem}
+
+\begin{proof}
+
+In the ($i + 1$)~th contraction, $i = 0, 1, ..., n - 3$. There are only ({$n - i$}) nodes in the graph \textbf{G}, so the \textbf{edges space} to contract on is \textbf{at least} $\frac{(n - i)|\textbf{C}|}{2}$.
+that is, if we denote the size of edges space as $ m $, we have $ m \geq \frac{(n - i) |\textbf{C}|}{2} $. 
+
+Therefore, we obtain:
+
+\begin{equation}
+    \begin{aligned}
+    Pr \bigg[ \text{sets of edges contracted in $(i + 1)$~th step} \cap \textbf{C} = \emptyset \bigg] &= 1 - \frac{|\textbf{C}|}{m} \\
+                                                                                                      &\geq 1 - \frac{|\textbf{C}|}{\frac{(n - i) |\textbf{C}|}{2}} \\
+                                                                                                      &= 1 - \frac{2}{n -i}
+    \end{aligned}
+\end{equation}
+
+Combining all the ($n - 2$) steps together:
+
+\begin{equation}\label{product prob}
+    \begin{aligned}
+    Pr \bigg[ return \text{\textbf{C}} \bigg] &= Pr \bigg[ \text{sets of edges contracted in (n - 2) steps} \cap \textbf{C} = \emptyset \bigg] \\
+                                                    &\geq \prod_{i = 0}^{n - 3} (1 - \frac{2}{n - i}) \\
+                                                    &= \frac{2}{n ( n - 1)}
+    \end{aligned}
+\end{equation}
+
+\end{proof}
+
+If we run the algorithm independently for $\frac{n (n - 1)}{2} \log n$ times.
+\begin{equation}
+    \begin{aligned}
+        Pr \bigg[ \text{return \textbf{C at least once}} \bigg] &= 1 - Pr \bigg[ \text{all runs fail to return \textbf{C}} \bigg] \\
+                                                                           &\geq 1 - \bigg( 1 - \frac{2}{n ( n - 1)} \bigg)^{\frac{n (n - 1)}{2} \log n} \\
+                                                                           &= 1 - \bigg( \frac{1}{e} \bigg)^{log n} \\
+                                                                           &= 1 - \frac{1}{n}
+    \end{aligned}
+\end{equation}
+According to the proof, we are expected to get the correct min-cut with probability \textbf{more than} $1 - \frac{1}{n}$.
+
+\section{Understand Fast Min-Cut Algorithm}
+
+The key mind to get a faster algorithm is to Stop the vanilla algorithm at $k$-th step in a single run, where $k$ is to be specified.
+How can we understand this \textbf{early stop} ? 
+
+If we expand the equation \ref{product prob}:
+\begin{equation}
+    Pr \bigg[ return \text{\textbf{C}} \bigg] = (1 - \frac{2}{n})(1 - \frac{2}{n - 1})(1 - \frac{2}{n - 2}) \cdots (1- \frac{2}{4})(1 - \frac{2}{3})
+\end{equation}
+
+observe the right-hand side, we can find that with the increase of terms, the probability changes accordingly.
+
+\end{document}

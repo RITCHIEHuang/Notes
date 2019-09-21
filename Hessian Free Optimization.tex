@@ -1,0 +1,100 @@
+\documentclass[titlepage,a4paper,12pt]{article}
+% packages
+\usepackage{mathtools}
+\usepackage{amssymb}
+% 添加首行缩进，两个字符
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage[CJKbookmarks]{hyperref}
+
+% title
+\title{Hessian Free Optimization}
+\author{ritchie huang}
+\date{2019-09-09}
+
+\begin{document}
+
+\maketitle 
+
+\tableofcontents
+\newpage
+
+\section{Background}\label{sec: background}
+
+we can get approximation of f(x) in second-order Tylor expansion:
+
+\begin{equation}
+	f(x+\Delta x) \approx f(x)+\nabla f(x)^{T} \Delta x+\Delta x^{T} H(f) \Delta x
+\end{equation}
+
+\section{Conjugate Gradient}\label{sec: conjugate gradient}
+
+Suppose we define function as bellow:
+
+\begin{equation}
+	f(x) = \frac{1}{2} x^{T} A x + b^{T} x + c. \ x, b, c \in \mathbb{R}^n
+\end{equation}
+
+where $A^{T} = A$, that's say $A$ is symmetric.
+
+\subsection{Prerequisite}
+
+Taking gradient of $f$, we obtain:
+\begin{equation}
+	\nabla f(x) = A x + b
+\end{equation}
+the direction of gradient is the direction in which the function rises fatest.
+
+If we hope to minimize our function, we can then update $x$ by:
+\begin{equation}
+	x = x - \alpha \nabla f(x)
+\end{equation}
+where $\alpha$ is called step-size (may be learning rate), we perform a line search to find the best $\alpha$ when the direction $d_0 = \nabla f(x)$ is given.
+
+Note that choosing the best $\alpha$ is equivalent to minimize the following function:
+\begin{equation}
+\begin{aligned}
+	g(\alpha) &= f(x_0 + \alpha d_0)\\
+			  &= \frac{1}{2} (x_0 + \alpha d_0)^{T} A (x_0 + \alpha d_0) + b^{T} (x_0 + \alpha d_0) + c \\
+			  &= \frac{1}{2} \alpha^2 d_0^{T} A d_0 + d_0^{T} (A x_0 + b) \alpha + \left( \frac{1}{2} x_0^{T} A x_0 + b^{T} x_0 + c \right)
+\end{aligned}
+\end{equation}
+
+More generally, when we update $x_i$ iteratively, since $g(\alpha)$ is a quadratic function in $\alpha$, it has a unique global minimum or maximum.Assume this function has a global minimum where $g^{\prime}(\alpha) = 0$:
+\begin{equation}
+	g^{\prime}(\alpha) = \alpha (d_i^{T} A d_i) + d_i^{T} (A x_i + b) = 0
+\end{equation}
+
+Solving the equation above, we obtain:
+\begin{equation}
+	\alpha = - \frac{d_i^{T} (A x_i + b)}{d_i^{T} A d_i}
+\end{equation}
+
+Thus, we can update $x1$ using $x0$ and $\alpha$ in the iterative algorithm:
+\begin{equation}
+	x_{1} = x_0 - \alpha \nabla f(x_0)
+\end{equation}
+
+However, it's subtle that each $\alpha_i$ is related to $d_i = -\nabla f(x_i)$, when we are going to update $x_{i + 1}$, we may ruin our update from previous iteration.Therefore, we need to rectify direction $d_{i + 1}$, which is conjugate to $d_i$.
+\begin{equation}
+	d_{i + 1} = - \nabla f(x_{i + 1}) + \beta_i d_i
+\end{equation}
+
+But, what's $\beta_i$ ? We can derive it from the conjugacy between $d_{i + 1}$ and $d_i$.
+
+We define vector $x$ and $y$ to be conjugate w.r.t a semi-definite matrix $A$ if $x^{T} A y = 0$.
+
+We obtain that: 
+\begin{equation}
+\begin{aligned}
+	d_{i + 1}^{T} A d_i &= 0 \\
+						&= \left( - \nabla f(x_{i + 1}) + \beta_i d_i) \right)^{T} A d_i \\
+						&= -\nabla f(x_{i + 1})^{T} A d_i + \beta_i d_i^{T} A d_i
+\end{aligned}
+\end{equation}
+
+Solve the equation above:
+\begin{equation}
+	\beta_i = \frac{\nabla f(x_{i + 1})^{T} A d_i}{d_i^{T} A d_i}
+\end{equation}
+\end{document}

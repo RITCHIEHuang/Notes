@@ -106,20 +106,20 @@ If we expand the equation \ref{eq: eq2}:
 \end{equation}
 
 From the right-hand side, we can find that with the increase of terms, the probability changes accordingly.
-\begin{figure}[h]
+\begin{figure}[h]\label{fig: fig1}
     \centering
     \includegraphics[scale=0.3]{images/min-cut-pic1.png}
     \caption{success probability vs. remaing nodes}
     \label{fig:fig1}
 \end{figure}
 
-Observing this image, it's easy to sense that the curve declines more and more slowly as the number of remaining nodes decreases.
+Observing this image\ref{fig:fig1}, it's easy to sense that the curve declines more and more slowly as the number of remaining nodes decreases.
 Thus, we can stop the contraction when the remaining nodes is ${\bf t}$, the procedure contraction can be adaptively changed.
 
 This leaves us a question: What should ${\bf t}$ exactly be ?
 
 In the original paper, Karger and Stein let $t = \lceil \frac{n}{\sqrt{2}} + 1 \rceil$.Because they hope to make equation \ref{eq: eq4}
-return a probability $\geq \frac{1}{2}$.Denote set of contracted edges util remaining \textbf{t} nodes as \textbf{A}.
+return a probability $\geq \frac{1}{2}$.Denoting the set of contracted edges util remaining \textbf{t} nodes as \textbf{A}.
 \begin{equation}\label{eq: eq5}
     \begin{aligned}
         Pr \bigg[ {\bf A} \cap {\bf C} = \emptyset \bigg] &\geq \prod_{i = 0}^{n - t - 1} (1 - \frac{2}{n - i}) \\
@@ -146,6 +146,7 @@ Solve the equation above, we get $t = \lceil \frac{n}{\sqrt{2}} + 1 \rceil$.
 \end{algorithm}
 
 As we use the improved contraction algorithm above, we can use accordingly modify the old Min-Cut algorithm to Fast-Cut algorithm:
+
 \begin{algorithm}[h]
     \caption{Karger-Stein's Algorithm: Fast-Cut({\bf G})}
     \begin{algorithmic}[1]

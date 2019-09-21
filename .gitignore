@@ -1,3 +1,5 @@
+*.DS_Store
+# tex related
 *.aux
 *.bbl
 *.blg
@@ -19,3 +21,4 @@
 *.fdb_latexmk
 *.synctex.gz
 Latex-tu1.*
+

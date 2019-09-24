@@ -62,7 +62,6 @@ In the ($i + 1$)~th contraction, $i = 0, 1, ..., n - 3$. There are only ({$n - i
 that is, if we denote the size of edges space as $ m $, we have $ m \geq \frac{(n - i) |\textbf{C}|}{2} $. 
 
 Therefore, we obtain:
-
 \begin{equation}
     \begin{aligned}
     Pr \bigg[ \text{sets of edges contracted in $(i + 1)$~th step} \cap \textbf{C} = \emptyset \bigg] &= 1 - \frac{|\textbf{C}|}{m} \\
@@ -72,7 +71,6 @@ Therefore, we obtain:
 \end{equation}
 
 Combining all the ($n - 2$) steps together:
-
 \begin{equation}\label{eq: eq2}
     \begin{aligned}
     Pr \bigg[ return \text{\textbf{C}} \bigg] &= Pr \bigg[ \text{sets of edges contracted in (n - 2) steps} \cap \textbf{C} = \emptyset \bigg] \\
@@ -113,7 +111,7 @@ From the right-hand side, we can find that with the increase of terms, the proba
     \label{fig:fig1}
 \end{figure}
 
-Observing this image\ref{fig:fig1}, it's easy to sense that the curve declines more and more slowly as the number of remaining nodes decreases.
+Observing this image \ref{fig:fig1}, it's easy to sense that the curve declines more and more slowly as the number of remaining nodes decreases.
 Thus, we can stop the contraction when the remaining nodes is ${\bf t}$, the procedure contraction can be adaptively changed.
 
 This leaves us a question: What should ${\bf t}$ exactly be ?

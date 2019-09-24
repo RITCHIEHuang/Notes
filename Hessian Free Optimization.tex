@@ -7,6 +7,12 @@
 \setlength{\parindent}{2em}
 \usepackage[CJKbookmarks]{hyperref}
 
+
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithmicx,algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
 % title
 \title{Hessian Free Optimization}
 \author{ritchie huang}
@@ -49,7 +55,7 @@ If we hope to minimize our function, we can then update $x$ by:
 \begin{equation}
 	x = x - \alpha \nabla f(x)
 \end{equation}
-where $\alpha$ is called step-size (may be learning rate), we perform a line search to find the best $\alpha$ when the direction $d_0 = \nabla f(x)$ is given.
+where $\alpha$ is called step-size (may be learning rate), we perform a line search to find the best $\alpha$ when the direction $d_0 = - \nabla f(x)$ is given.
 
 Note that choosing the best $\alpha$ is equivalent to minimize the following function:
 \begin{equation}
@@ -70,9 +76,9 @@ Solving the equation above, we obtain:
 	\alpha = - \frac{d_i^{T} (A x_i + b)}{d_i^{T} A d_i}
 \end{equation}
 
-Thus, we can update $x1$ using $x0$ and $\alpha$ in the iterative algorithm:
+Thus, we can update $x_1$ using $x_0$ and $\alpha$ in the iterative algorithm:
 \begin{equation}
-	x_{1} = x_0 - \alpha \nabla f(x_0)
+	x_{1} = x_0 + \alpha \nabla f(x_0)
 \end{equation}
 
 However, it's subtle that each $\alpha_i$ is related to $d_i = -\nabla f(x_i)$, when we are going to update $x_{i + 1}$, we may ruin our update from previous iteration.Therefore, we need to rectify direction $d_{i + 1}$, which is conjugate to $d_i$.
@@ -97,4 +103,38 @@ Solve the equation above:
 \begin{equation}
 	\beta_i = \frac{\nabla f(x_{i + 1})^{T} A d_i}{d_i^{T} A d_i}
 \end{equation}
+
+Combining all steps above, let's writing the pseudocode for Conjugate Gradient Alorithm in the next section.
+
+\section{Pseudocode for Conjugate Gradient}
+
+Give function : $ f(x)$, the algorithm is going to update $x$ to minimize : $ f(x) $ numerically and iteratively.
+First, we approximate this function to twice Tylor Expansion:
+
+\begin{equation}
+	f(x+\Delta x) \approx f(x)+ b^{T} \Delta x+\Delta x^{T} A \Delta x
+\end{equation}
+
+\begin{algorithm}[h]
+	\caption{Conjugate Gradient Algorithm}
+	\begin{algorithmic}[1]
+		\Require A, b, n, $\epsilon$
+		\Ensure x
+
+		\State Initialize {\bf k} = 0, {\bf $x_k$} = 0,  {\bf $d_k$} = $- (A x_k + b)$.
+		\While{ k < n}
+			\State Select the best step size $\alpha = -\frac{d_{k}^{T} d_{k}}{d_{k}^{T} A d_{k}}$
+			\State Update solution $x_{k + 1} = x_{k} + \alpha d_{k}$
+			\State $d_{k + 1} = A x_{k} + b$
+			\State $\beta = \frac{d_{k + 1}^{T} A d_{k}}{d_{k}^{T} A d_{k}}$
+			\State Rectify update direction $d_{k + 1} = d_{k + 1} + \beta d_{k}$
+			\State $k \leftarrow k + 1$ 
+		\EndWhile
+
+		\State \Return x
+	\end{algorithmic}
+
+\end{algorithm}
+
+
 \end{document}
